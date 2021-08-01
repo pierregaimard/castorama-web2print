@@ -52,6 +52,16 @@ class Order
      */
     private $items;
 
+    /**
+     * @ORM\Column(type="string", length=100)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $person;
+
     public function __construct()
     {
         $this->items = new ArrayCollection();
@@ -148,6 +158,30 @@ class Order
                 $item->setShopOrder(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getPerson(): ?string
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?string $person): self
+    {
+        $this->person = $person;
 
         return $this;
     }
