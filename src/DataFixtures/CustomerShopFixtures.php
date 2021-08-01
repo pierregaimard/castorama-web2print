@@ -5,11 +5,12 @@ namespace App\DataFixtures;
 use App\Entity\CustomerShop;
 use App\Entity\CustomerShopAddress;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class CustomerShopFixtures extends Fixture implements DependentFixtureInterface
+class CustomerShopFixtures extends Fixture
 {
+    public const SHOP_REFERENCE = 'SHOP_REFERENCE';
+
     public function load(ObjectManager $manager)
     {
         $shopAddress = new CustomerShopAddress();
@@ -22,13 +23,10 @@ class CustomerShopFixtures extends Fixture implements DependentFixtureInterface
         $shop->setName('Dardilly');
         $shop->setAddress($shopAddress);
         $shop->setCode('1234');
-        $shop->setUser($this->getReference(UserFixtures::SHOP_USER_REFERENCE));
-    }
+        $manager->persist($shop);
 
-    public function getDependencies()
-    {
-        return [
-            UserFixtures::class,
-        ];
+        $manager->flush();
+
+        $this->addReference(self::SHOP_REFERENCE, $shop);
     }
 }

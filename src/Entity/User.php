@@ -60,6 +60,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $isActive;
 
+    /**
+     * @ORM\OneToOne(targetEntity=CustomerShop::class, inversedBy="user", cascade={"persist", "remove"})
+     */
+    private ?CustomerShop $customerShop;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -190,5 +195,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isActive = $isActive;
 
         return $this;
+    }
+
+    public function getCustomerShop(): ?CustomerShop
+    {
+        return $this->customerShop;
+    }
+
+    public function setCustomerShop(?CustomerShop $customerShop): self
+    {
+        $this->customerShop = $customerShop;
+
+        return $this;
+    }
+
+    public function getDisplayName(): string
+    {
+        if (null !== $this->customerShop) {
+            return 'Magasin de ' . $this->customerShop->getName();
+        }
+
+        return $this->firstName . ' ' . $this->lastName;
     }
 }

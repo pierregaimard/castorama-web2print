@@ -4,12 +4,13 @@ namespace App\DataFixtures;
 
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class UserFixtures extends Fixture
+class UserFixtures extends Fixture implements DependentFixtureInterface
 {
-    public const SHOP_USER_REFERENCE = 'SHOP_USER_REFERENCE';
+
 
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher
@@ -51,12 +52,20 @@ class UserFixtures extends Fixture
         $shop = new User();
         $shop->setUsername('Dardilly');
         $shop->setPassword($this->passwordHasher->hashPassword($shop, 'pass'));
+        $shop->setCustomerShop($this->getReference(CustomerShopFixtures::SHOP_REFERENCE));
         $appAdmin->setRoles([User::ROLE_CUSTOMER_SHOP]);
         $shop->setIsActive(true);
         $manager->persist($shop);
 
         $manager->flush();
 
-        $this->addReference(self::SHOP_USER_REFERENCE, $shop);
+
+    }
+
+    public function getDependencies()
+    {
+        return [
+            CustomerShopFixtures::class,
+        ];
     }
 }
