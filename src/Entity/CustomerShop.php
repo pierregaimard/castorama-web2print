@@ -30,12 +30,6 @@ class CustomerShop
     private $code;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $user;
-
-    /**
      * @ORM\OneToOne(targetEntity=CustomerShopAddress::class, mappedBy="customerShop", cascade={"persist", "remove"})
      */
     private $Address;
@@ -44,6 +38,11 @@ class CustomerShop
      * @ORM\OneToMany(targetEntity=Order::class, mappedBy="shop")
      */
     private $orders;
+
+    /**
+     * @ORM\OneToOne(targetEntity=User::class, mappedBy="customerShop", cascade={"persist", "remove"})
+     */
+    private $user;
 
     public function __construct()
     {
@@ -75,18 +74,6 @@ class CustomerShop
     public function setCode(?string $code): self
     {
         $this->code = $code;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(User $user): self
-    {
-        $this->user = $user;
 
         return $this;
     }
@@ -134,6 +121,28 @@ class CustomerShop
                 $order->setShop(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setCustomerShop(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getCustomerShop() !== $this) {
+            $user->setCustomerShop($this);
+        }
+
+        $this->user = $user;
 
         return $this;
     }
