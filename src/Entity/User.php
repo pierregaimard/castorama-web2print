@@ -12,6 +12,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const APP_ADMIN = 'APP_ADMIN';
+    public const COMPANY_USER = 'COMPANY_USER';
+    public const ROLE_CUSTOMER_ADMIN = 'CUSTOMER_ADMIN';
+    public const ROLE_CUSTOMER_SHOP = 'CUSTOMER_SHOP';
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
